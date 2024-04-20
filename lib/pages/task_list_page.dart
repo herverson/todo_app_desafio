@@ -33,7 +33,7 @@ class _TaskListPageState extends State<TaskListPage> {
               final task = tasks[index];
               return ListTile(
                 title: Text(task.title),
-                trailing: Checkbox(
+                leading: Checkbox(
                   value: task.isCompleted,
                   onChanged: (value) {
                     final updatedTask = task.copyWith(isCompleted: value);

@@ -14,7 +14,7 @@ class TaskCubit extends Cubit<List<Task>> {
   }
 
   void addTask(Task task) async {
-    final List<Task> newState = List.from(state)..add(task);
+    final List<Task> newState = [task, ...state];
     emit(newState);
     await _taskRepository.saveTasks(newState);
   }

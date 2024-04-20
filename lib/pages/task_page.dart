@@ -30,18 +30,18 @@ class TaskPage extends StatelessWidget {
               decoration: const InputDecoration(labelText: 'Task Title'),
             ),
             const SizedBox(height: 16.0),
-            Row(
-              children: [
-                const Text('Completed?'),
-                const SizedBox(width: 8.0),
-                Checkbox(
-                  value: task != null ? task!.isCompleted : false,
-                  onChanged: (value) {
-                    // Implementar a lógica de marcação da tarefa como concluída ou não
-                  },
-                ),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     const Text('Completed?'),
+            //     const SizedBox(width: 8.0),
+            //     Checkbox(
+            //       value: task != null ? task!.isCompleted : false,
+            //       onChanged: (value) {
+            //         // Implementar a lógica de marcação da tarefa como concluída ou não
+            //       },
+            //     ),
+            //   ],
+            // ),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
@@ -67,7 +67,6 @@ class TaskPage extends StatelessWidget {
       }
       Navigator.of(context).pop();
     } else {
-      // Exibir um alerta ou mensagem de erro ao usuário informando que o título da tarefa é obrigatório
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
