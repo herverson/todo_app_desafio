@@ -40,6 +40,18 @@ class _TaskListPageState extends State<TaskListPage> {
                     BlocProvider.of<TaskCubit>(context).updateTask(updatedTask);
                   },
                 ),
+                onTap: () {
+                  final taskCubit = BlocProvider.of<TaskCubit>(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TaskPage(
+                        taskCubit: taskCubit,
+                        task: task,
+                      ),
+                    ),
+                  );
+                },
                 onLongPress: () {
                   BlocProvider.of<TaskCubit>(context).deleteTask(task.id);
                 },
