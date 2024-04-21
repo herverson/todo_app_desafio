@@ -1,12 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_list_desafio/pages/task_list_page.dart';
-import 'cubit/task_cubit.dart';
-import 'services/task_service.dart'; // Importe a implementação concreta do TaskRepository
+import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'cubit/task_cubit.dart';
+import 'pages/task_list_page.dart';
+import 'services/task_service.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -21,8 +18,7 @@ class MyApp extends StatelessWidget {
       home: MultiBlocProvider(
         providers: [
           BlocProvider<TaskCubit>(
-            create: (context) => TaskCubit(
-                TaskService()), // Certifique-se de passar uma instância válida de TaskRepository
+            create: (context) => TaskCubit(TaskService()),
           ),
         ],
         child: const TaskListPage(),
