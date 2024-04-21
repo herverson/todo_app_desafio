@@ -8,7 +8,7 @@ import 'package:todo_list_desafio/pages/task_page.dart';
 import '../cubit/task_cubit.dart';
 import '../models/task.dart';
 import '../widgets/custom_button.dart';
-import '../widgets/custom_modal_action.dart';
+import '../widgets/modal_delete_task.dart';
 
 class TaskListPage extends StatefulWidget {
   const TaskListPage({Key? key}) : super(key: key);
@@ -43,6 +43,47 @@ class _TaskListPageState extends State<TaskListPage> {
             _taskCubit.updateSearchTerm(value);
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Filtrar Tarefas'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          title: const Text('Todas'),
+                          onTap: () {
+                            _taskCubit.applyFilter(TaskFilter.all);
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Completadas'),
+                          onTap: () {
+                            _taskCubit.applyFilter(TaskFilter.completed);
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Não Completadas'),
+                          onTap: () {
+                            _taskCubit.applyFilter(TaskFilter.incomplete);
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<TaskCubit, List<Task>>(
         builder: (context, tasks) {
@@ -214,55 +255,6 @@ class _TaskListPageState extends State<TaskListPage> {
           );
         },
         child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class ModalDeleteTask extends StatelessWidget {
-  const ModalDeleteTask({
-    super.key,
-    required this.task,
-  });
-
-  final Task task;
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-      ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const Text(
-                "Deletar tarefa",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(task.title),
-              const SizedBox(height: 24),
-              const SizedBox(height: 24),
-              CustomModalActionButton(
-                onClose: () {
-                  Navigator.of(context).pop(false);
-                },
-                onSave: () {
-                  Navigator.of(context).pop(true);
-                },
-                titleOp1: 'Cancelar',
-                titleOp2: 'Deletar',
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

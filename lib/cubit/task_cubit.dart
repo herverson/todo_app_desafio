@@ -3,6 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/task.dart';
 import '../repositories/task_repository.dart';
 
+enum TaskFilter {
+  all,
+  completed,
+  incomplete,
+}
+
 class TaskCubit extends Cubit<List<Task>> {
   final TaskRepository _taskRepository;
 
@@ -46,6 +52,22 @@ class TaskCubit extends Cubit<List<Task>> {
       return task.title.toLowerCase().contains(searchTerm.toLowerCase());
     }).toList();
 
+    emit(filteredTasks);
+  }
+
+  void applyFilter(TaskFilter filter) {
+    List<Task> filteredTasks;
+    switch (filter) {
+      case TaskFilter.all:
+        loadTasks();
+        return;
+      case TaskFilter.completed:
+        filteredTasks = state.where((task) => task.isCompleted).toList();
+        break;
+      case TaskFilter.incomplete:
+        filteredTasks = state.where((task) => !task.isCompleted).toList();
+        break;
+    }
     emit(filteredTasks);
   }
 }
