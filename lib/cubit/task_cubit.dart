@@ -35,4 +35,17 @@ class TaskCubit extends Cubit<List<Task>> {
     emit(newState);
     await _taskRepository.saveTasks(newState);
   }
+
+  void updateSearchTerm(String searchTerm) {
+    if (searchTerm.isEmpty) {
+      loadTasks();
+      return;
+    }
+
+    final List<Task> filteredTasks = state.where((task) {
+      return task.title.toLowerCase().contains(searchTerm.toLowerCase());
+    }).toList();
+
+    emit(filteredTasks);
+  }
 }

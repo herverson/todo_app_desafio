@@ -15,21 +15,34 @@ class TaskListPage extends StatefulWidget {
 }
 
 class _TaskListPageState extends State<TaskListPage> {
+  late TextEditingController _searchController;
+  late TaskCubit _taskCubit;
+
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<TaskCubit>(context).loadTasks();
+    _searchController = TextEditingController();
+    _taskCubit = BlocProvider.of<TaskCubit>(context);
+    _taskCubit.loadTasks();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo List'),
+        title: TextField(
+          controller: _searchController,
+          decoration: const InputDecoration(
+            hintText: 'Buscar tarefas...',
+            border: InputBorder.none,
+          ),
+          onChanged: (value) {
+            _taskCubit.updateSearchTerm(value);
+          },
+        ),
       ),
       body: BlocBuilder<TaskCubit, List<Task>>(
         builder: (context, tasks) {
-          final cubit = BlocProvider.of<TaskCubit>(context);
           return ListView.builder(
             itemCount: tasks.length,
             padding: const EdgeInsets.all(6),
@@ -49,52 +62,50 @@ class _TaskListPageState extends State<TaskListPage> {
                 ),
                 confirmDismiss: (direction) async {
                   return showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                          child: SingleChildScrollView(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  const Text("Deletar tarefa",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16)),
-                                  const SizedBox(
-                                    height: 24,
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                const Text(
+                                  "Deletar tarefa",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
                                   ),
-                                  Text(task.title),
-                                  const SizedBox(
-                                    height: 24,
-                                  ),
-                                  const SizedBox(
-                                    height: 24,
-                                  ),
-                                  CustomModalActionButton(
-                                    onClose: () {
-                                      Navigator.of(context).pop(false);
-                                    },
-                                    onSave: () {
-                                      Navigator.of(context).pop(true);
-                                    },
-                                    titleOp1: 'Sair',
-                                    titleOp2: 'Deletar',
-                                  ),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(height: 24),
+                                Text(task.title),
+                                const SizedBox(height: 24),
+                                const SizedBox(height: 24),
+                                CustomModalActionButton(
+                                  onClose: () {
+                                    Navigator.of(context).pop(false);
+                                  },
+                                  onSave: () {
+                                    Navigator.of(context).pop(true);
+                                  },
+                                  titleOp1: 'Sair',
+                                  titleOp2: 'Deletar',
+                                ),
+                              ],
                             ),
                           ),
-                        );
-                      });
+                        ),
+                      );
+                    },
+                  );
                 },
                 onDismissed: (direction) {
                   if (direction == DismissDirection.endToStart) {
-                    BlocProvider.of<TaskCubit>(context).deleteTask(task.id);
+                    _taskCubit.deleteTask(task.id);
                   }
                 },
                 child: Card(
@@ -111,7 +122,7 @@ class _TaskListPageState extends State<TaskListPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => TaskPage(
-                            taskCubit: cubit,
+                            taskCubit: _taskCubit,
                             task: task,
                           ),
                         ),
@@ -130,8 +141,9 @@ class _TaskListPageState extends State<TaskListPage> {
                         builder: (context) {
                           return Dialog(
                             shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12)),
+                            ),
                             child: SingleChildScrollView(
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
@@ -143,27 +155,23 @@ class _TaskListPageState extends State<TaskListPage> {
                                           ? "Desmarcar tarefa"
                                           : "Marcar tarefa como concluída",
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
                                     ),
-                                    const SizedBox(
-                                      height: 24,
-                                    ),
+                                    const SizedBox(height: 24),
                                     Text(task.title),
-                                    const SizedBox(
-                                      height: 24,
-                                    ),
-                                    const SizedBox(
-                                      height: 24,
-                                    ),
+                                    const SizedBox(height: 24),
+                                    const SizedBox(height: 24),
                                     CustomButton(
                                       buttonText: task.isCompleted
                                           ? "Desmarcar"
                                           : "Marcar como concluída",
                                       onPressed: () {
                                         final updatedTask = task.copyWith(
-                                            isCompleted: !task.isCompleted);
-                                        cubit.updateTask(updatedTask);
+                                          isCompleted: !task.isCompleted,
+                                        );
+                                        _taskCubit.updateTask(updatedTask);
                                         Navigator.of(context).pop();
                                       },
                                       color:
@@ -188,11 +196,10 @@ class _TaskListPageState extends State<TaskListPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final taskCubit = BlocProvider.of<TaskCubit>(context);
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TaskPage(taskCubit: taskCubit),
+              builder: (context) => TaskPage(taskCubit: _taskCubit),
             ),
           );
         },
