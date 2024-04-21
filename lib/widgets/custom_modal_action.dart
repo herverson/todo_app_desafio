@@ -5,24 +5,30 @@ import 'custom_button.dart';
 class CustomModalActionButton extends StatelessWidget {
   final VoidCallback onClose;
   final VoidCallback onSave;
+  final String titleOp1;
+  final String titleOp2;
 
   const CustomModalActionButton(
-      {super.key, required this.onClose, required this.onSave});
+      {super.key,
+      required this.onClose,
+      required this.onSave,
+      required this.titleOp1,
+      required this.titleOp2});
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
         CustomButton(
           onPressed: onClose,
           color: const Color.fromRGBO(250, 30, 78, 1),
-          buttonText: "Fechar",
+          buttonText: titleOp1,
           textColor: Colors.white,
         ),
         CustomButton(
           onPressed: onSave,
-          buttonText: "Salvar",
+          buttonText: titleOp2,
           color: const Color.fromRGBO(250, 30, 78, 1),
           textColor: Colors.white,
         )

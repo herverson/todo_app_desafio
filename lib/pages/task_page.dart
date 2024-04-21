@@ -23,13 +23,13 @@ class TaskPage extends StatelessWidget {
 
       if (task != null) {
         _titleController.text = task!.title;
-        _dateController.text = DateFormat('yyyy-MM-dd').format(task!.date);
+        _dateController.text = formattedDate;
         _notesController.text = task!.notes;
       }
 
       return Scaffold(
         appBar: AppBar(
-          title: Text(task != null ? 'Edit Task' : 'Add Task'),
+          title: Text(task != null ? 'Editar Tarefa' : 'Adicionar Tarefa'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -38,23 +38,23 @@ class TaskPage extends StatelessWidget {
             children: [
               TextField(
                 controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Task Title'),
+                decoration: const InputDecoration(labelText: 'Título'),
               ),
               const SizedBox(height: 16.0),
               TextField(
                 controller: _dateController,
                 readOnly: true,
-                decoration: const InputDecoration(labelText: 'Date'),
+                decoration: const InputDecoration(
+                    labelText: 'Data', prefixIcon: Icon(Icons.calendar_today)),
                 onTap: () async {
                   final DateTime? pickedDate = await showDatePicker(
                     context: context,
                     initialDate: DateTime.now(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
-                    locale: const Locale('pt', 'BR'),
                   );
                   if (pickedDate != null) {
-                    _dateController.text = formattedDate;
+                    _dateController.text = _dateFormat.format(pickedDate);
                   }
                 },
               ),
@@ -62,14 +62,15 @@ class TaskPage extends StatelessWidget {
               TextField(
                 controller: _notesController,
                 maxLines: 3,
-                decoration: const InputDecoration(labelText: 'Notes'),
+                decoration: const InputDecoration(labelText: 'Notas'),
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
                   _saveTask(context, taskCubit);
                 },
-                child: Text(task != null ? 'Save Changes' : 'Add Task'),
+                child: Text(
+                    task != null ? 'Salvar Alterações' : 'Adicionar Tarefa'),
               ),
             ],
           ),
@@ -81,9 +82,15 @@ class TaskPage extends StatelessWidget {
   void _saveTask(BuildContext context, TaskCubit taskCubit) {
     final title = _titleController.text.trim();
     final notes = _notesController.text.trim();
-    final date = DateTime.parse(_dateController.text.trim());
 
-    if (title.isNotEmpty) {
+    DateTime? date;
+    try {
+      date = _dateFormat.parse(_dateController.text.trim());
+    } catch (e) {
+      print('Erro ao formatar a data: $e');
+    }
+
+    if (title.isNotEmpty && date != null) {
       final taskToUpdate = task?.copyWith(
         title: title,
         date: date,
@@ -105,8 +112,8 @@ class TaskPage extends StatelessWidget {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content: const Text('Task title cannot be empty.'),
+          title: const Text('Erro'),
+          content: const Text('Título não pode ser vazio.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),

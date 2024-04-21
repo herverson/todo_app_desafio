@@ -5,6 +5,10 @@ import 'cubit/task_cubit.dart';
 import 'pages/task_list_page.dart';
 import 'services/task_service.dart';
 
+void main() {
+  runApp(const MyApp());
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -13,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Todo List Desafio',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
       home: MultiBlocProvider(
         providers: [
