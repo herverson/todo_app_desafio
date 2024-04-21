@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../cubit/task_cubit.dart';
 import '../models/task.dart';
+import '../widgets/custom_modal_action.dart';
 
 class TaskPage extends StatefulWidget {
   final Task? task;
@@ -35,6 +36,52 @@ class TaskPageState extends State<TaskPage> {
     _isCompleted = widget.task?.isCompleted ?? false;
   }
 
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Text(
+                    "Excluir Tarefa",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(widget.task!.title),
+                  const SizedBox(height: 24),
+                  const SizedBox(height: 24),
+                  CustomModalActionButton(
+                    onClose: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    onSave: () {
+                      widget.taskCubit.deleteTask(widget.task!.id);
+                      Navigator.of(context).pop(true);
+                      Navigator.of(context).pop();
+                    },
+                    titleOp1: 'Cancelar',
+                    titleOp2: 'Excluir',
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,22 +95,32 @@ class TaskPageState extends State<TaskPage> {
           children: [
             TextField(
               controller: _titleController,
+              autofocus: true,
+              textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
-                labelText: 'Título',
-                prefixIcon: IconButton(
-                  icon: Icon(
-                    color: const Color.fromRGBO(250, 30, 78, 1),
-                    _isCompleted
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked,
-                    size: 32,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isCompleted = !_isCompleted;
-                    });
-                  },
-                ),
+                hintText: widget.task != null ? '' : 'Adicionar uma tarefa',
+                prefixIcon: widget.task != null
+                    ? IconButton(
+                        icon: Icon(
+                          color: const Color.fromRGBO(250, 30, 78, 1),
+                          _isCompleted
+                              ? Icons.check_circle
+                              : Icons.radio_button_unchecked,
+                          size: 32,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isCompleted = !_isCompleted;
+                          });
+                        },
+                      )
+                    : Icon(
+                        color: const Color.fromRGBO(250, 30, 78, 1),
+                        _isCompleted
+                            ? Icons.check_circle
+                            : Icons.radio_button_unchecked,
+                        size: 32,
+                      ),
               ),
             ),
             const SizedBox(height: 16.0),
@@ -92,25 +149,48 @@ class TaskPageState extends State<TaskPage> {
             TextField(
               controller: _notesController,
               maxLines: 5,
+              textCapitalization: TextCapitalization.sentences,
               decoration: const InputDecoration(labelText: 'Anotações'),
             ),
             const SizedBox(height: 16.0),
             const Expanded(
               child: SizedBox(),
             ),
-            MaterialButton(
-              onPressed: () {
-                _saveTask(context, widget.taskCubit);
-              },
-              shape: RoundedRectangleBorder(
-                  side: const BorderSide(color: Colors.red),
-                  borderRadius: BorderRadius.circular(12)),
-              color: const Color.fromRGBO(250, 30, 78, 1),
-              textColor: Colors.white,
-              padding: const EdgeInsets.all(14.0),
-              child: Text(widget.task != null
-                  ? 'Salvar Alterações'
-                  : 'Adicionar Tarefa'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MaterialButton(
+                  onPressed: () {
+                    _saveTask(context, widget.taskCubit);
+                  },
+                  shape: RoundedRectangleBorder(
+                      side: const BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(12)),
+                  color: const Color.fromRGBO(250, 30, 78, 1),
+                  textColor: Colors.white,
+                  padding: const EdgeInsets.all(14.0),
+                  child: Text(widget.task != null
+                      ? 'Salvar Alterações'
+                      : 'Adicionar Tarefa'),
+                ),
+                if (widget.task != null)
+                  Expanded(
+                    child: Container(),
+                  ),
+                if (widget.task != null)
+                  MaterialButton(
+                    onPressed: () {
+                      _showDeleteConfirmation(context);
+                    },
+                    shape: RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.red),
+                        borderRadius: BorderRadius.circular(12)),
+                    color: Colors.white,
+                    textColor: const Color.fromRGBO(250, 30, 78, 1),
+                    padding: const EdgeInsets.all(14.0),
+                    child: const Text('Excluir'),
+                  ),
+              ],
             ),
           ],
         ),

@@ -1,5 +1,8 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:todo_list_desafio/pages/task_page.dart';
 
 import '../cubit/task_cubit.dart';
@@ -43,154 +46,161 @@ class _TaskListPageState extends State<TaskListPage> {
       ),
       body: BlocBuilder<TaskCubit, List<Task>>(
         builder: (context, tasks) {
-          return ListView.builder(
-            itemCount: tasks.length,
-            padding: const EdgeInsets.all(6),
-            itemBuilder: (context, index) {
-              final task = tasks[index];
-              return Dismissible(
-                key: Key(task.id),
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  color: Colors.red,
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 20.0),
-                  child: const Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                ),
-                confirmDismiss: (direction) async {
-                  return showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Dialog(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                        ),
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                const Text(
-                                  "Deletar tarefa",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 24),
-                                Text(task.title),
-                                const SizedBox(height: 24),
-                                const SizedBox(height: 24),
-                                CustomModalActionButton(
-                                  onClose: () {
-                                    Navigator.of(context).pop(false);
-                                  },
-                                  onSave: () {
-                                    Navigator.of(context).pop(true);
-                                  },
-                                  titleOp1: 'Cancelar',
-                                  titleOp2: 'Deletar',
-                                ),
-                              ],
-                            ),
+          return tasks.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      /// Lottie
+                      FadeIn(
+                        child: SizedBox(
+                          width: 200,
+                          height: 200,
+                          child: Lottie.asset(
+                            "assets/1.json",
+                            animate: tasks.isNotEmpty ? false : true,
                           ),
                         ),
-                      );
-                    },
-                  );
-                },
-                onDismissed: (direction) {
-                  if (direction == DismissDirection.endToStart) {
-                    _taskCubit.deleteTask(task.id);
-                  }
-                },
-                child: Card(
-                  child: ListTile(
-                    title: Text(
-                      task.title,
-                      style: task.isCompleted
-                          ? const TextStyle(
-                              decoration: TextDecoration.lineThrough)
-                          : null,
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TaskPage(
-                            taskCubit: _taskCubit,
-                            task: task,
-                          ),
-                        ),
-                      );
-                    },
-                    leading: IconButton(
-                      icon: Icon(
-                        task.isCompleted
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked,
-                        color: const Color.fromRGBO(250, 30, 78, 1),
                       ),
-                      iconSize: 32,
-                      onPressed: () => showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Dialog(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                            ),
-                            child: SingleChildScrollView(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text(
-                                      task.isCompleted
-                                          ? "Desmarcar tarefa"
-                                          : "Marcar tarefa como concluída",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
+                      FadeInUp(
+                        from: 30,
+                        child: const Text("Todas as tarefas concluídas"),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: tasks.length,
+                  padding: const EdgeInsets.all(6),
+                  itemBuilder: (context, index) {
+                    final task = tasks[index];
+                    return Dismissible(
+                      key: Key(task.id),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20.0),
+                        child: const Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        ),
+                      ),
+                      confirmDismiss: (direction) async {
+                        return showDialog(
+                          context: context,
+                          builder: (context) {
+                            return ModalDeleteTask(task: task);
+                          },
+                        );
+                      },
+                      onDismissed: (direction) {
+                        if (direction == DismissDirection.endToStart) {
+                          _taskCubit.deleteTask(task.id);
+                        }
+                      },
+                      child: Card(
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Text(
+                                task.title,
+                                style: task.isCompleted
+                                    ? const TextStyle(
+                                        decoration: TextDecoration.lineThrough)
+                                    : null,
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TaskPage(
+                                      taskCubit: _taskCubit,
+                                      task: task,
                                     ),
-                                    const SizedBox(height: 24),
-                                    Text(task.title),
-                                    const SizedBox(height: 24),
-                                    const SizedBox(height: 24),
-                                    CustomButton(
-                                      buttonText: task.isCompleted
-                                          ? "Desmarcar"
-                                          : "Marcar como concluída",
-                                      onPressed: () {
-                                        final updatedTask = task.copyWith(
-                                          isCompleted: !task.isCompleted,
-                                        );
-                                        _taskCubit.updateTask(updatedTask);
-                                        Navigator.of(context).pop();
-                                      },
-                                      color:
-                                          const Color.fromRGBO(250, 30, 78, 1),
-                                      textColor: Colors.white,
-                                    )
-                                  ],
+                                  ),
+                                );
+                              },
+                              leading: IconButton(
+                                icon: Icon(
+                                  task.isCompleted
+                                      ? Icons.check_circle
+                                      : Icons.radio_button_unchecked,
+                                  color: const Color.fromRGBO(250, 30, 78, 1),
+                                ),
+                                iconSize: 32,
+                                onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12)),
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text(
+                                                task.isCompleted
+                                                    ? "Desmarcar tarefa"
+                                                    : "Marcar tarefa como concluída",
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 24),
+                                              Text(task.title),
+                                              const SizedBox(height: 24),
+                                              const SizedBox(height: 24),
+                                              CustomButton(
+                                                buttonText: task.isCompleted
+                                                    ? "Desmarcar"
+                                                    : "Marcar como concluída",
+                                                onPressed: () {
+                                                  final updatedTask =
+                                                      task.copyWith(
+                                                    isCompleted:
+                                                        !task.isCompleted,
+                                                  );
+                                                  _taskCubit
+                                                      .updateTask(updatedTask);
+                                                  Navigator.of(context).pop();
+                                                },
+                                                color: const Color.fromRGBO(
+                                                    250, 30, 78, 1),
+                                                textColor: Colors.white,
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
-                          );
-                        },
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Text(
+                                DateFormat('EEE, dd/MM/yyyy', 'pt_BR')
+                                    .format(task.date),
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(
+                                  color: Color.fromRGBO(250, 30, 78, 1),
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
+                    );
+                  },
+                );
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -204,6 +214,55 @@ class _TaskListPageState extends State<TaskListPage> {
           );
         },
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class ModalDeleteTask extends StatelessWidget {
+  const ModalDeleteTask({
+    super.key,
+    required this.task,
+  });
+
+  final Task task;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Text(
+                "Deletar tarefa",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(task.title),
+              const SizedBox(height: 24),
+              const SizedBox(height: 24),
+              CustomModalActionButton(
+                onClose: () {
+                  Navigator.of(context).pop(false);
+                },
+                onSave: () {
+                  Navigator.of(context).pop(true);
+                },
+                titleOp1: 'Cancelar',
+                titleOp2: 'Deletar',
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
