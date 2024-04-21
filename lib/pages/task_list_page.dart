@@ -32,6 +32,7 @@ class _TaskListPageState extends State<TaskListPage> {
           final cubit = BlocProvider.of<TaskCubit>(context);
           return ListView.builder(
             itemCount: tasks.length,
+            padding: const EdgeInsets.all(6),
             itemBuilder: (context, index) {
               final task = tasks[index];
               return Dismissible(
@@ -184,6 +185,7 @@ class _TaskListPageState extends State<TaskListPage> {
           );
         },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final taskCubit = BlocProvider.of<TaskCubit>(context);

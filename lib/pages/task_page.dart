@@ -65,10 +65,19 @@ class TaskPage extends StatelessWidget {
                 decoration: const InputDecoration(labelText: 'Notas'),
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton(
+              const Expanded(
+                child: SizedBox(),
+              ),
+              MaterialButton(
                 onPressed: () {
                   _saveTask(context, taskCubit);
                 },
+                shape: RoundedRectangleBorder(
+                    side: const BorderSide(color: Colors.red),
+                    borderRadius: BorderRadius.circular(12)),
+                color: const Color.fromRGBO(250, 30, 78, 1),
+                textColor: Colors.white,
+                padding: const EdgeInsets.all(14.0),
                 child: Text(
                     task != null ? 'Salvar Alterações' : 'Adicionar Tarefa'),
               ),

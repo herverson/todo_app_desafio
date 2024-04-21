@@ -17,7 +17,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Todo List Desafio',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        colorScheme: const ColorScheme.light(
+          primary: Color.fromRGBO(250, 30, 78, 1),
+        ),
       ),
       home: MultiBlocProvider(
         providers: [
