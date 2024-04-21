@@ -43,51 +43,10 @@ class _TaskListPageState extends State<TaskListPage> {
             _taskCubit.updateSearchTerm(value);
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Filtrar Tarefas'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          title: const Text('Todas'),
-                          onTap: () {
-                            _taskCubit.applyFilter(TaskFilter.all);
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: const Text('Completadas'),
-                          onTap: () {
-                            _taskCubit.applyFilter(TaskFilter.completed);
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: const Text('Não Completadas'),
-                          onTap: () {
-                            _taskCubit.applyFilter(TaskFilter.incomplete);
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ],
       ),
       body: BlocBuilder<TaskCubit, List<Task>>(
         builder: (context, tasks) {
-          return tasks.isEmpty
+          return tasks.isEmpty && _searchController.text.isEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
