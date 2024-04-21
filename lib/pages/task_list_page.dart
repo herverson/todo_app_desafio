@@ -92,7 +92,7 @@ class _TaskListPageState extends State<TaskListPage> {
                                   onSave: () {
                                     Navigator.of(context).pop(true);
                                   },
-                                  titleOp1: 'Sair',
+                                  titleOp1: 'Cancelar',
                                   titleOp2: 'Deletar',
                                 ),
                               ],

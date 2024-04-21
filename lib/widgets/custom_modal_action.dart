@@ -22,9 +22,9 @@ class CustomModalActionButton extends StatelessWidget {
       children: <Widget>[
         CustomButton(
           onPressed: onClose,
-          color: const Color.fromRGBO(250, 30, 78, 1),
+          color: Colors.white,
           buttonText: titleOp1,
-          textColor: Colors.white,
+          textColor: Colors.black,
         ),
         CustomButton(
           onPressed: onSave,
