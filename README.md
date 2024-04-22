@@ -32,12 +32,15 @@ Um aplicativo simples de lista de tarefas desenvolvido em Flutter.
 `flutter run`
 
 ## Screens
-<row>
-  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/1.jpg"></column>
-  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/2.jpg"></column>
-  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/3.jpg"></column>
-  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/4.jpg"></column>
-  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/5.jpg"></column>
-  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/6.jpg"></column>
-  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/7.jpg"></column>
-</row>
+
+<div class="row">
+  <div class="column">
+   <img src="https://github.com/herverson/todo_app_desafio/assets/25849810/6236aa71-9716-442e-9c3b-f749b8fe7320" height="400"/>
+  <img src="https://github.com/herverson/todo_app_desafio/assets/25849810/68a3dbdc-4c28-48b3-98fb-f0e4ed7ca54b" height="400"/>
+  <img src="https://github.com/herverson/todo_app_desafio/assets/25849810/8c5d8967-2912-4477-9dbd-125c74ab616d" height="400"/>
+  <img src="https://github.com/herverson/todo_app_desafio/assets/25849810/1a47fa44-b78c-4364-bbc0-7c07a65ff859" height="400"/>
+  <img src="https://github.com/herverson/todo_app_desafio/assets/25849810/291d20e6-320e-4900-944d-8f0a5d3c9516" height="400"/>
+  <img src="https://github.com/herverson/todo_app_desafio/assets/25849810/c32858dc-2fc5-490f-9ece-247c9442248d" height="400"/>
+  <img src="https://github.com/herverson/todo_app_desafio/assets/25849810/71b1486e-8628-4733-80d6-9aa0bcfa1363" height="400"/>
+
+</div>
