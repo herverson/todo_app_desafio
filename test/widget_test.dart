@@ -1,30 +1,71 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:todo_list_desafio/cubit/task_cubit.dart';
+import 'package:todo_list_desafio/models/task.dart';
+import 'package:todo_list_desafio/pages/task_list_page.dart';
 
-import 'package:todo_list_desafio/main.dart';
+class MockTaskCubit extends MockCubit<List<Task>> implements TaskCubit {}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('TaskListPage', () {
+    late MockTaskCubit taskCubit;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    setUp(() {
+      taskCubit = MockTaskCubit();
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    testWidgets('should show center when task list is empty',
+        (WidgetTester tester) async {
+      when(() => taskCubit.state).thenReturn([]);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<TaskCubit>.value(
+            value: taskCubit,
+            child: TaskListPage(),
+          ),
+        ),
+      );
+
+      await tester
+          .pumpAndSettle(); // Aguarda o término de todas as operações assíncronas
+
+      expect(find.text('Nenhuma tarefa encontrada'), findsOneWidget);
+    });
+
+    testWidgets('should show task list when task list is not empty',
+        (WidgetTester tester) async {
+      when(() => taskCubit.state).thenReturn([
+        Task(
+            id: '1',
+            title: 'Task 1',
+            isCompleted: false,
+            date: DateTime.now(),
+            notes: ''),
+        Task(
+            id: '2',
+            title: 'Task 2',
+            isCompleted: false,
+            date: DateTime.now(),
+            notes: ''),
+      ]);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<TaskCubit>.value(
+            value: taskCubit,
+            child: TaskListPage(),
+          ),
+        ),
+      );
+
+      await tester
+          .pumpAndSettle(); // Aguarda o término de todas as operações assíncronas
+
+      expect(find.byType(ListView), findsOneWidget);
+    });
   });
 }

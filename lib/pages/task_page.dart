@@ -150,7 +150,12 @@ class TaskPageState extends State<TaskPage> {
               controller: _notesController,
               maxLines: 5,
               textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(labelText: 'Anotações'),
+              decoration: const InputDecoration(
+                  labelText: 'Anotações',
+                  prefixIcon: Icon(
+                    Icons.bookmark,
+                    color: Color.fromRGBO(250, 30, 78, 1),
+                  )),
             ),
             const SizedBox(height: 16.0),
             const Expanded(
