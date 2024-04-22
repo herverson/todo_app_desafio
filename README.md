@@ -31,3 +31,12 @@ Um aplicativo simples de lista de tarefas desenvolvido em Flutter.
 4. Execute o aplicativo:
 `flutter run`
 
+## Screens
+<row>
+  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/1.jpg"></column>
+  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/2.jpg"></column>
+  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/3.jpg"></column>
+  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/4.jpg"></column>
+  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/Screenshot/5.jpg"></column>
+  <column><img align="left" width="300" height="600" src="https://github.com/herverson/todo_app_desafio/blob/master/screens/6.jpg"></column>
+</row>
